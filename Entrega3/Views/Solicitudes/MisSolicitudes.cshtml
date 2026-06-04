@@ -1,0 +1,194 @@
+@{
+    ViewBag.Title = "Mis Solicitudes TI";
+    int currentUserId = (int)Session["UsuarioId"];
+    string currentUserName = (string)Session["NombreCompleto"];
+    string currentUserEmail = (string)Session["Correo"];
+}
+
+<div class="row mb-4 mt-4">
+    <div class="col-12">
+        <h2 class="fw-bold border-bottom pb-2">Mis Solicitudes TI</h2>
+        <p class="text-muted">Crea tickets y revisa tu historial.</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Formulario Registro Solicitud -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0"><i class="bi bi-plus-circle"></i> Registrar Solicitud</h5>
+            </div>
+            <div class="card-body bg-white">
+                <form id="formSoporte" onsubmit="event.preventDefault(); registrarSolicitudAPI();">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Nombre Solicitante</label>
+                        <input type="text" class="form-control bg-light" value="@currentUserName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Correo Institucional</label>
+                        <input type="email" class="form-control bg-light" value="@currentUserEmail" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Área Solicitante <span class="text-danger">*</span></label>
+                        <select id="solicitudArea" class="form-select" required>
+                            <option value="">Seleccione un área...</option>
+                            <option value="1">Administración</option>
+                            <option value="2">Docencia</option>
+                            <option value="3">Laboratorio</option>
+                            <option value="4">Biblioteca</option>
+                            <option value="5">Dirección</option>
+                            <option value="6">Otro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Tipo de Problema <span class="text-danger">*</span></label>
+                        <select id="solicitudProblema" class="form-select" required>
+                            <option value="">Seleccione el problema...</option>
+                            <option value="1">Problema con computador</option>
+                            <option value="2">Problema con internet</option>
+                            <option value="3">Problema con software</option>
+                            <option value="4">Problema con impresora</option>
+                            <option value="5">Problema con cuenta institucional</option>
+                            <option value="6">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Descripción Detallada <span class="text-danger">*</span></label>
+                        <textarea id="solicitudDescripcion" class="form-control" rows="4" minlength="10" required
+                            placeholder="Describa el problema (mínimo 10 caracteres)..."></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">Prioridad</label>
+                            <select id="solicitudPrioridad" class="form-select">
+                                <option value="1">Baja</option>
+                                <option value="2">Media</option>
+                                <option value="3">Alta</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold">Fecha</label>
+                            <input type="date" id="solicitudFecha" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Estado Inicial</label>
+                        <input type="text" class="form-control bg-light text-warning fw-bold" value="Pendiente" readonly>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Enviar a API</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historial Solicitudes Usuario -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-info text-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-list-task"></i> Mi Historial</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="cargarMisSolicitudesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
+            </div>
+            <div class="card-body p-0 table-responsive">
+                <table class="table table-hover table-striped mb-0 text-center align-middle" id="tablaMisSolicitudes">
+                    <thead class="table-light">
+                        <tr><th>ID</th><th>Fecha</th><th>área</th><th>Problema</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody id="tbodyMisSolicitudes">
+                        <tr><td colspan="5">Cargando datos...</td></tr>
+                    </tbody>
+                </table>
+                <div class="p-3 text-muted small bg-light">* Como usuario, solo puedes ver tus propios tickets y no tienes permisos para eliminarlos o cambiar su estado.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        const currentUserId = @currentUserId;
+
+        function renderizarInsigniaEstado(estadoId, estadoNombre) {
+            if (estadoId === 1) return `<span class="badge bg-warning text-dark">${estadoNombre}</span>`;
+            if (estadoId === 2) return `<span class="badge bg-primary">${estadoNombre}</span>`;
+            if (estadoId === 3) return `<span class="badge bg-success">${estadoNombre}</span>`;
+            return `<span class="badge bg-secondary">${estadoNombre}</span>`;
+        }
+
+        function cargarMisSolicitudesAPI() {
+            fetch(`/api/solicitudes?usuarioId=${currentUserId}`)
+               .then(response => response.json())
+               .then(data => { 
+                   const tbody = document.getElementById('tbodyMisSolicitudes');
+                   tbody.innerHTML = '';
+                   if(data.length === 0) {
+                       tbody.innerHTML = '<tr><td colspan="5">No hay solicitudes registradas.</td></tr>';
+                       return;
+                   }
+
+                   data.forEach(s => {
+                       // Format date from /Date(123456789)/ to readable
+                       const date = new Date(parseInt(s.FechaSolicitud.substr(6)));
+                       const row = `<tr>
+                           <td class="fw-bold">#${s.Id}</td>
+                           <td>${date.toISOString().split('T')[0]}</td>
+                           <td>${s.AreaNombre}</td>
+                           <td>${s.TipoProblemaNombre}</td>
+                           <td>${renderizarInsigniaEstado(s.EstadoSolicitudId, s.EstadoNombre)}</td>
+                       </tr>`;
+                       tbody.innerHTML += row;
+                   });
+               })
+               .catch(error => {
+                   console.error(error);
+                   mostrarAlerta("Error al cargar historial desde API.", "danger");
+               });
+        }
+
+        function registrarSolicitudAPI() {
+            const data = {
+                AreaSolicitanteId: parseInt(document.getElementById('solicitudArea').value),
+                TipoProblemaId: parseInt(document.getElementById('solicitudProblema').value),
+                Descripcion: document.getElementById('solicitudDescripcion').value,
+                PrioridadId: parseInt(document.getElementById('solicitudPrioridad').value),
+                FechaSolicitud: document.getElementById('solicitudFecha').value
+            };
+            
+            fetch('/api/solicitudes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                if(res.ok) {
+                    mostrarAlerta("Solicitud registrada con éxito mediante API", "success");
+                    cargarMisSolicitudesAPI();
+                    document.getElementById('formSoporte').reset();
+                } else {
+                    res.json().then(err => mostrarAlerta("Error: " + (err.message || "No se pudo registrar"), "danger"));
+                }
+            })
+            .catch(error => {
+                mostrarAlerta("Error de conexión a la API", "danger");
+            });
+        }
+
+        // Cargar datos al iniciar y configurar fechas
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarMisSolicitudesAPI();
+            
+            // Restringir la fecha seleccionable desde hoy en adelante
+            const fechaInput = document.getElementById('solicitudFecha');
+            const hoy = new Date().toISOString().split('T')[0];
+            fechaInput.setAttribute('min', hoy);
+            fechaInput.value = hoy; // Por defecto hoy
+        });
+    </script>
+}

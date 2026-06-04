@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte TI - TechHelpWeb</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .mvc-view { display: none; }
+        .mvc-view.active { display: block; }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- ==========================================
+         BARRA DE NAVEGACIÓN
+    =========================================== -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#"><i class="bi bi-pc-display"></i> TechHelpWeb</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showView('loginView')">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showView('adminView')">Admin Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showView('operadorView')">Dashboard Soporte</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showView('usuarioView')">Mis Solicitudes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showView('perfilView')">Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="#"><i class="bi bi-box-arrow-right"></i> Salir</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Contenedor global de alertas -->
+        <div id="alertContainer"></div>
+
+        <!-- ==========================================
+             VISTA 1: LOGIN (AuthController)
+        =========================================== -->
+        <div id="loginView" class="mvc-view row justify-content-center active">
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h4 class="mb-0"><i class="bi bi-person-circle"></i> Iniciar Sesión</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="formLogin" method="POST" action="/Auth/Login">
+                            <div class="mb-3">
+                                <label class="form-label">Correo o Nombre de Usuario</label>
+                                <input type="text" class="form-control" name="Usuario" required placeholder="usuario@institucion.cl">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" name="Password" required>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="showView('usuarioView')">Entrar al Sistema</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VISTA 2: MI PERFIL (PerfilController)
+        =========================================== -->
+        <div id="perfilView" class="mvc-view">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold border-bottom pb-2">Administración de Perfil</h2>
+                    <p class="text-muted">Actualiza tus datos personales y credenciales de acceso.</p>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Datos Personales -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        <div class="card-header bg-secondary text-white"><h5 class="mb-0">Datos Básicos</h5></div>
+                        <div class="card-body">
+                            <form method="POST" action="/Perfil/Actualizar">
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" name="NombreCompleto" value="Usuario de Prueba" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Correo Electrónico</label>
+                                    <!-- Correo bloqueado visual y funcionalmente -->
+                                    <input type="email" class="form-control bg-light" name="Correo" value="usuario@institucion.cl" readonly>
+                                    <div class="form-text text-muted">El correo institucional no puede ser modificado.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Rol Asignado</label>
+                                    <input type="text" class="form-control bg-light" value="Usuario" readonly>
+                                </div>
+                                <button type="submit" class="btn btn-secondary"><i class="bi bi-save"></i> Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cambio de Contraseña -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100 border-0">
+                        <div class="card-header bg-dark text-white"><h5 class="mb-0">Cambiar Contraseña</h5></div>
+                        <div class="card-body">
+                            <form method="POST" action="/Perfil/CambiarPassword">
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña Actual</label>
+                                    <input type="password" class="form-control" name="PasswordActual" required minlength="6">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control" name="PasswordNueva" required minlength="6">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmar Nueva Contraseña</label>
+                                    <input type="password" class="form-control" name="PasswordConfirmacion" required minlength="6">
+                                </div>
+                                <button type="submit" class="btn btn-dark"><i class="bi bi-key"></i> Actualizar Contraseña</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VISTA 3: ADMINISTRADOR (UsuariosController - MVC PURO)
+        =========================================== -->
+        <div id="adminView" class="mvc-view">
+            <div class="row mb-4"><div class="col-12"><h2 class="fw-bold border-bottom pb-2">Panel de Administración</h2></div></div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Gestión de Usuarios del Sistema</h5>
+                    <button class="btn btn-sm btn-light"><i class="bi bi-person-plus"></i> Nuevo Usuario</button>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped text-center align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td><td>Admin Base</td><td>admin@institucion.cl</td><td>Administrador</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-power"></i> Desactivar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td><td>Soporte Uno</td><td>soporte@institucion.cl</td><td>Soporte</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-power"></i> Desactivar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VISTA 4: OPERADOR SOPORTE (Dashboard Global - API)
+        =========================================== -->
+        <div id="operadorView" class="mvc-view">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold border-bottom pb-2">Mesa de Ayuda (Vista Operador)</h2>
+                    <p class="text-muted">Revisión general de tickets. Consume GET (todos), PUT y DELETE.</p>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0"><i class="bi bi-inboxes"></i> Todas las Solicitudes (Institución)</h5>
+                    <button class="btn btn-sm btn-light" onclick="cargarSolicitudesGlobalesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover table-striped mb-0 text-center align-middle" id="tablaOperador">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Solicitante</th><th>Área</th><th>Problema</th><th>Estado</th><th>Acciones API</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold">#001</td><td>Juan Pérez</td><td>Laboratorio</td><td>Problema con computador</td>
+                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-success" title="Actualizar Estado (PUT)"><i class="bi bi-pencil-square"></i> Mover Estado</button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar (DELETE)"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             VISTA 5: USUARIO NORMAL (Mis Solicitudes - API)
+        =========================================== -->
+        <div id="usuarioView" class="mvc-view">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold border-bottom pb-2">Mis Solicitudes TI</h2>
+                    <p class="text-muted">Crea tickets y revisa tu historial. Consume POST y GET (filtrado).</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Formulario Registro Solicitud -->
+                <div class="col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="card-title mb-0"><i class="bi bi-plus-circle"></i> Registrar Solicitud</h5>
+                        </div>
+                        <div class="card-body bg-white">
+                            <form id="formSoporte" onsubmit="event.preventDefault(); registrarSolicitudAPI();">
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Nombre Solicitante</label>
+                                    <input type="text" id="solicitanteNombre" class="form-control bg-light" value="Usuario de Prueba" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Correo Institucional</label>
+                                    <input type="email" id="solicitanteCorreo" class="form-control bg-light" value="usuario@institucion.cl" readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Área Solicitante <span class="text-danger">*</span></label>
+                                    <select id="solicitudArea" name="AreaSolicitanteId" class="form-select" required>
+                                        <option value="">Seleccione un área...</option>
+                                        <option value="1">Administración</option>
+                                        <option value="2">Docencia</option>
+                                        <option value="3">Laboratorio</option>
+                                        <option value="4">Biblioteca</option>
+                                        <option value="5">Dirección</option>
+                                        <option value="6">Otro</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Tipo de Problema <span class="text-danger">*</span></label>
+                                    <select id="solicitudProblema" name="TipoProblemaId" class="form-select" required>
+                                        <option value="">Seleccione el problema...</option>
+                                        <option value="1">Problema con computador</option>
+                                        <option value="2">Problema con internet</option>
+                                        <option value="3">Problema con software</option>
+                                        <option value="4">Problema con impresora</option>
+                                        <option value="5">Problema con cuenta institucional</option>
+                                        <option value="6">Otro</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Descripción Detallada <span class="text-danger">*</span></label>
+                                    <textarea id="solicitudDescripcion" name="Descripcion" class="form-control" rows="4" minlength="10" required
+                                        placeholder="Describa el problema (mínimo 10 caracteres)..."></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small fw-bold">Prioridad</label>
+                                        <select id="solicitudPrioridad" name="PrioridadId" class="form-select">
+                                            <option value="1">Baja</option>
+                                            <option value="2">Media</option>
+                                            <option value="3">Alta</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label small fw-bold">Fecha</label>
+                                        <input type="date" id="solicitudFecha" name="FechaSolicitud" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label small fw-bold">Estado Inicial</label>
+                                    <input type="text" class="form-control bg-light text-warning fw-bold" value="Pendiente" readonly>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success"><i class="bi bi-send"></i> Enviar a API</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historial Solicitudes Usuario -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-list-task"></i> Mi Historial</h5>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="cargarMisSolicitudesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-hover table-striped mb-0 text-center align-middle" id="tablaMisSolicitudes">
+                                <thead class="table-light">
+                                    <tr><th>ID</th><th>Fecha</th><th>Área</th><th>Problema</th><th>Estado</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">#005</td><td>2026-06-04</td><td>Biblioteca</td><td>Problema con internet</td>
+                                        <td><span class="badge bg-warning text-dark">Pendiente</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-3 text-muted small bg-light">* Como usuario, solo puedes ver tus propios tickets y no tienes permisos para eliminarlos o cambiar su estado.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- LÓGICA FRONTEND Y CONSUMO API (ESQUELETO) -->
+    <script>
+        function showView(viewId) {
+            document.querySelectorAll('.mvc-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function mostrarAlerta(mensaje, tipo) {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `
+                <div class="alert alert-${tipo} alert-dismissible fade show shadow-sm" role="alert">
+                    <strong>${tipo === 'success' ? '<i class="bi bi-check-circle"></i> ¡Éxito!' : '<i class="bi bi-info-circle"></i> Info'}</strong> ${mensaje}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // ESQUELETO FETCH API - MÓDULO SOLICITUDES
+        // ==========================================
+
+        // 1. GET: Cargar tabla Operador (Todas)
+        function cargarSolicitudesGlobalesAPI() {
+            /* fetch('/api/solicitudes')
+               .then(response => response.json())
+               .then(data => { // renderizarTablaOperador(data); })
+               .catch(error => console.error(error));
+            */
+            mostrarAlerta("Ejecutando GET /api/solicitudes (Sin filtro - Operador)", "info");
+        }
+
+        // 2. GET: Cargar tabla Usuario (Filtradas)
+        function cargarMisSolicitudesAPI() {
+            /* // Suponiendo que pasamos el ID del usuario actual
+            let currentUserId = 1; 
+            fetch(`/api/solicitudes?usuarioId=${currentUserId}`)
+               .then(response => response.json())
+               .then(data => { // renderizarTablaUsuario(data); })
+               .catch(error => console.error(error));
+            */
+            mostrarAlerta("Ejecutando GET /api/solicitudes?usuarioId=X (Filtrado - Usuario)", "info");
+        }
+
+        // 3. POST: Enviar formulario (Usuario)
+        function registrarSolicitudAPI() {
+            const data = {
+                AreaSolicitanteId: document.getElementById('solicitudArea').value,
+                TipoProblemaId: document.getElementById('solicitudProblema').value,
+                Descripcion: document.getElementById('solicitudDescripcion').value,
+                PrioridadId: document.getElementById('solicitudPrioridad').value,
+                FechaSolicitud: document.getElementById('solicitudFecha').value
+            };
+            
+            /*
+            fetch('/api/solicitudes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(res => {
+                if(res.ok) {
+                    mostrarAlerta("Solicitud registrada con éxito", "success");
+                    cargarMisSolicitudesAPI();
+                }
+            });
+            */
+            console.log("JSON Payload (POST):", data);
+            mostrarAlerta("Solicitud enviada mediante POST /api/solicitudes.", "success");
+            document.getElementById('formSoporte').reset();
+        }
+
+        // 4. PUT: Actualizar estado (Operador)
+        function actualizarEstadoAPI(id, nuevoEstadoId) {
+            /*
+            fetch(`/api/solicitudes/${id}/estado`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoEstadoId)
+            }).then(res => { if(res.ok) cargarSolicitudesGlobalesAPI(); });
+            */
+            mostrarAlerta(`Estado de solicitud ${id} actualizado mediante PUT.`, "success");
+        }
+
+        // 5. DELETE: Eliminar solicitud (Operador)
+        function eliminarSolicitudAPI(id) {
+            if(confirm('¿Está seguro de eliminar esta solicitud del sistema?')) {
+                /*
+                fetch(`/api/solicitudes/${id}`, { method: 'DELETE' })
+                  .then(res => { if(res.ok) cargarSolicitudesGlobalesAPI(); });
+                */
+                mostrarAlerta(`Solicitud ${id} eliminada mediante DELETE.`, "success");
+            }
+        }
+    </script>
+</body>
+</html>

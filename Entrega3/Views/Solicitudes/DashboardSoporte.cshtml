@@ -1,0 +1,141 @@
+@{
+    ViewBag.Title = "Dashboard Soporte";
+}
+
+<div class="row mb-4 mt-4">
+    <div class="col-12">
+        <h2 class="fw-bold border-bottom pb-2">Mesa de Ayuda (Vista Operador)</h2>
+        <p class="text-muted">Revisión general de tickets, Obtener, Actualizar y Eliminar Solicitudes.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0"><i class="bi bi-inboxes"></i> Todas las Solicitudes (Institución)</h5>
+        <button class="btn btn-sm btn-light" onclick="cargarSolicitudesGlobalesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-hover table-striped mb-0 text-center align-middle" id="tablaOperador">
+            <thead class="table-light">
+                <tr><th>ID</th><th>Solicitante</th><th>área</th><th>Problema</th><th>Estado</th><th>Acciones API</th></tr>
+            </thead>
+            <tbody id="tbodyOperador">
+                <tr><td colspan="6">Cargando datos...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Cambiar Estado -->
+<div class="modal fade" id="modalEstado" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Actualizar Estado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modalSolicitudId">
+        <div class="mb-3">
+            <label class="form-label">Seleccione el nuevo estado:</label>
+            <select id="modalNuevoEstado" class="form-select">
+                <option value="1">Pendiente</option>
+                <option value="2">En proceso</option>
+                <option value="3">Resuelto</option>
+            </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarNuevoEstado()">Actualizar API</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section scripts {
+    <script>
+        function renderizarInsigniaEstado(estadoId, estadoNombre) {
+            if (estadoId === 1) return `<span class="badge bg-warning text-dark">${estadoNombre}</span>`;
+            if (estadoId === 2) return `<span class="badge bg-primary">${estadoNombre}</span>`;
+            if (estadoId === 3) return `<span class="badge bg-success">${estadoNombre}</span>`;
+            return `<span class="badge bg-secondary">${estadoNombre}</span>`;
+        }
+
+        function cargarSolicitudesGlobalesAPI() {
+            fetch('/api/solicitudes')
+               .then(response => response.json())
+               .then(data => {
+                   const tbody = document.getElementById('tbodyOperador');
+                   tbody.innerHTML = '';
+                   if(data.length === 0) {
+                       tbody.innerHTML = '<tr><td colspan="6">No hay solicitudes en el sistema.</td></tr>';
+                       return;
+                   }
+
+                   data.forEach(s => {
+                       const row = `<tr>
+                           <td class="fw-bold">#${s.Id}</td>
+                           <td>${s.SolicitanteNombre}</td>
+                           <td>${s.AreaNombre}</td>
+                           <td>${s.TipoProblemaNombre}</td>
+                           <td>${renderizarInsigniaEstado(s.EstadoSolicitudId, s.EstadoNombre)}</td>
+                           <td>
+                               <button class="btn btn-sm btn-outline-success" title="Actualizar Estado (PUT)" onclick="abrirModalEstado(${s.Id}, ${s.EstadoSolicitudId})"><i class="bi bi-pencil-square"></i></button>
+                               <button class="btn btn-sm btn-outline-danger" title="Eliminar (DELETE)" onclick="eliminarSolicitudAPI(${s.Id})"><i class="bi bi-trash"></i></button>
+                           </td>
+                       </tr>`;
+                       tbody.innerHTML += row;
+                   });
+               })
+               .catch(error => {
+                   console.error(error);
+                   mostrarAlerta("Error al cargar datos globales.", "danger");
+               });
+        }
+
+        function abrirModalEstado(id, estadoActualId) {
+            document.getElementById('modalSolicitudId').value = id;
+            document.getElementById('modalNuevoEstado').value = estadoActualId;
+            const modal = new bootstrap.Modal(document.getElementById('modalEstado'));
+            modal.show();
+        }
+
+        function guardarNuevoEstado() {
+            const id = document.getElementById('modalSolicitudId').value;
+            const nuevoEstadoId = document.getElementById('modalNuevoEstado').value;
+            
+            fetch(`/api/solicitudes/${id}/estado?nuevoEstadoId=${nuevoEstadoId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(res => { 
+                if(res.ok) {
+                    mostrarAlerta(`Estado de solicitud #${id} actualizado mediante PUT.`, "success");
+                    cargarSolicitudesGlobalesAPI();
+                    bootstrap.Modal.getInstance(document.getElementById('modalEstado')).hide();
+                } else {
+                    mostrarAlerta("Error al actualizar estado.", "danger");
+                }
+            })
+            .catch(err => mostrarAlerta("Error de conexión a la API", "danger"));
+        }
+
+        function eliminarSolicitudAPI(id) {
+            if(confirm('¿Está seguro de eliminar esta solicitud del sistema?')) {
+                fetch(`/api/solicitudes/${id}`, { method: 'DELETE' })
+                  .then(res => { 
+                      if(res.ok) {
+                          mostrarAlerta(`Solicitud #${id} eliminada mediante DELETE.`, "success");
+                          cargarSolicitudesGlobalesAPI();
+                      } else {
+                          mostrarAlerta("No tienes permisos para eliminar o la solicitud no existe.", "danger");
+                      }
+                  })
+                  .catch(err => mostrarAlerta("Error de conexión", "danger"));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarSolicitudesGlobalesAPI);
+    </script>
+}

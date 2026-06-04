@@ -1,0 +1,67 @@
+@model IEnumerable<Entrega3.Models.Usuario>
+@{
+    ViewBag.Title = "Admin Usuarios";
+}
+
+<div class="row mb-4 mt-4">
+    <div class="col-12">
+        <h2 class="fw-bold border-bottom pb-2">Panel de Administración</h2>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3">
+        <h5 class="mb-0"><i class="bi bi-people"></i> Gestión de Usuarios del Sistema</h5>
+        <a href="@Url.Action("Crear", "Usuarios")" class="btn btn-sm btn-light"><i class="bi bi-person-plus"></i> Nuevo Usuario</a>
+    </div>
+    <div class="card-body p-0 table-responsive">
+        <table class="table table-striped text-center align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.Id</td>
+                        <td>@u.NombreCompleto</td>
+                        <td>@u.Correo</td>
+                        <td>@u.NombreRol</td>
+                        <td>
+                            @if (u.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Editar", "Usuarios", new { id = u.Id })" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+                            @using (Html.BeginForm("ToggleStatus", "Usuarios", new { id = u.Id }, FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('¿Está seguro de cambiar el estado de este usuario?');" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                if (u.Estado)
+                                {
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-power"></i> Desactivar</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-power"></i> Activar</button>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
