@@ -2,8 +2,6 @@
 
 ## 1. Validación del Proyecto
 
-Tus apuntes iniciales y la estructura planeada están **perfectamente alineados** con las exigencias de la rúbrica para alcanzar la nota máxima (100 puntos / Nota 7.0).
-
 Has capturado los puntos críticos que suelen ser motivo de error, destacando especialmente:
 * La restricción estricta de utilizar **MVC puro sin API** para la autenticación y el perfil.
 * El mapeo exacto de las rutas HTTP requeridas para el `SolicitudesApiController`.
