@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Web.Mvc;
 using Entrega3.Data;
 using Entrega3.Models;
@@ -39,17 +40,30 @@ namespace Entrega3.Controllers
 
             if (ModelState.IsValid)
             {
-                var u = new Entrega3.Models.Usuario
+                var existingUsers = db.GetUsuarios();
+                if (existingUsers.Any(u => u.NombreUsuario.Equals(model.NombreUsuario, System.StringComparison.OrdinalIgnoreCase)))
                 {
-                    NombreCompleto = model.NombreCompleto,
-                    NombreUsuario = model.NombreUsuario,
-                    Correo = model.Correo,
-                    ClaveHash = model.NombreUsuario + "123",
-                    RolId = model.RolId
-                };
-                db.InsertUsuario(u);
-                TempData["SuccessMessage"] = "Usuario creado exitosamente.";
-                return RedirectToAction("Index");
+                    ModelState.AddModelError("NombreUsuario", "Este nombre de usuario ya está registrado.");
+                }
+                if (existingUsers.Any(u => u.Correo.Equals(model.Correo, System.StringComparison.OrdinalIgnoreCase)))
+                {
+                    ModelState.AddModelError("Correo", "Este correo electrónico ya está en uso.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    var u = new Entrega3.Models.Usuario
+                    {
+                        NombreCompleto = model.NombreCompleto,
+                        NombreUsuario = model.NombreUsuario,
+                        Correo = model.Correo,
+                        ClaveHash = model.NombreUsuario + "123",
+                        RolId = model.RolId
+                    };
+                    db.InsertUsuario(u);
+                    TempData["SuccessMessage"] = "Usuario creado exitosamente.";
+                    return RedirectToAction("Index");
+                }
             }
             ViewBag.Roles = new SelectList(db.GetRoles(), "Id", "NombreRol", model.RolId);
             return View(model);

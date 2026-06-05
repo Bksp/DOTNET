@@ -4,18 +4,18 @@
 
 <div class="row mb-4 mt-4">
     <div class="col-12">
-        <h2 class="fw-bold border-bottom pb-2">Mesa de Ayuda (Vista Operador)</h2>
-        <p class="text-muted">Revisión general de tickets, Obtener, Actualizar y Eliminar Solicitudes.</p>
+        <h2 class="fw-bold border-bottom border-light border-opacity-25 pb-2 text-white">Mesa de Ayuda (Vista Operador)</h2>
+        <p class="text-white-50">Revisión general de tickets, Obtener, Actualizar y Eliminar Solicitudes.</p>
     </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0"><i class="bi bi-inboxes"></i> Todas las Solicitudes (Institución)</h5>
-        <button class="btn btn-sm btn-light" onclick="cargarSolicitudesGlobalesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
+<div class="glass-card border-0 p-4">
+    <div class="border-bottom border-light border-opacity-25 mb-4 pb-2 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 text-white"><i class="bi bi-inboxes"></i> Todas las Solicitudes (Institución)</h5>
+        <button class="btn btn-sm btn-light rounded-pill px-3" onclick="cargarSolicitudesGlobalesAPI()"><i class="bi bi-arrow-clockwise"></i> Refrescar API</button>
     </div>
-    <div class="card-body p-0 table-responsive">
-        <table class="table table-hover table-striped mb-0 text-center align-middle" id="tablaOperador">
+    <div class="bg-transparent table-responsive">
+        <table class="table table-hover table-borderless mb-0 text-center align-middle" id="tablaOperador">
             <thead class="table-light">
                 <tr><th>ID</th><th>Solicitante</th><th>área</th><th>Problema</th><th>Estado</th><th>Acciones API</th></tr>
             </thead>
@@ -29,15 +29,15 @@
 <!-- Modal Cambiar Estado -->
 <div class="modal fade" id="modalEstado" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Actualizar Estado</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content glass-card border-0 p-3">
+      <div class="modal-header border-bottom border-light border-opacity-25">
+        <h5 class="modal-title text-white">Actualizar Estado</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="modalSolicitudId">
         <div class="mb-3">
-            <label class="form-label">Seleccione el nuevo estado:</label>
+            <label class="form-label text-white-50">Seleccione el nuevo estado:</label>
             <select id="modalNuevoEstado" class="form-select">
                 <option value="1">Pendiente</option>
                 <option value="2">En proceso</option>
@@ -45,9 +45,9 @@
             </select>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="guardarNuevoEstado()">Actualizar API</button>
+      <div class="modal-footer border-top border-light border-opacity-25">
+        <button type="button" class="btn btn-outline-light rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary rounded-pill px-4" onclick="guardarNuevoEstado()">Actualizar API</button>
       </div>
     </div>
   </div>
@@ -82,7 +82,7 @@
                            <td>${renderizarInsigniaEstado(s.EstadoSolicitudId, s.EstadoNombre)}</td>
                            <td>
                                <button class="btn btn-sm btn-outline-success" title="Actualizar Estado (PUT)" onclick="abrirModalEstado(${s.Id}, ${s.EstadoSolicitudId})"><i class="bi bi-pencil-square"></i></button>
-                               <button class="btn btn-sm btn-outline-danger" title="Eliminar (DELETE)" onclick="eliminarSolicitudAPI(${s.Id})"><i class="bi bi-trash"></i></button>
+                               <button class="btn btn-sm btn-danger" title="Eliminar (DELETE)" onclick="eliminarSolicitudAPI(${s.Id})"><i class="bi bi-trash"></i></button>
                            </td>
                        </tr>`;
                        tbody.innerHTML += row;

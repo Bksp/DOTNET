@@ -1,21 +1,21 @@
-﻿@model Entrega3.Models.UsuarioEditViewModel
+@model Entrega3.Models.UsuarioEditViewModel
 @{
     ViewBag.Title = "Editar Usuario";
 }
 
 <div class="row mb-4 mt-4">
     <div class="col-12">
-        <h2 class="fw-bold border-bottom pb-2">Editar Usuario</h2>
+        <h2 class="fw-bold border-bottom border-light border-opacity-25 pb-2 text-white">Editar Usuario</h2>
     </div>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Modificar Datos</h5>
+        <div class="glass-card border-0 p-4">
+            <div class="border-bottom border-light border-opacity-25 mb-4 pb-2">
+                <h5 class="mb-0 text-white"><i class="bi bi-pencil-square"></i> Modificar Datos</h5>
             </div>
-            <div class="card-body">
+            <div class="bg-transparent">
                 @using (Html.BeginForm("Editar", "Usuarios", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
@@ -23,26 +23,26 @@
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                     <div class="mb-3">
-                        <label class="form-label">Nombre Completo</label>
+                        <label class="form-label text-white-50">Nombre Completo</label>
                         @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.NombreCompleto, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Correo Institucional</label>
+                        <label class="form-label text-white-50">Correo Institucional</label>
                         @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", type = "email" })
                         @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Rol del Sistema</label>
+                        <label class="form-label text-white-50">Rol del Sistema</label>
                         @Html.DropDownListFor(m => m.RolId, (SelectList)ViewBag.Roles, "Seleccione un rol...", new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Cancelar</a>
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Cambios</button>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-light rounded-pill"><i class="bi bi-arrow-left"></i> Cancelar</a>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="bi bi-save"></i> Guardar Cambios</button>
                     </div>
                 }
             </div>

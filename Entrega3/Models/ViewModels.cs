@@ -16,6 +16,7 @@ namespace Entrega3.Models
     public class PerfilViewModel
     {
         [Required(ErrorMessage = "El nombre completo es obligatorio")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El nombre solo puede contener letras y espacios")]
         public string NombreCompleto { get; set; }
 
         public string Correo { get; set; } // Readonly
@@ -43,6 +44,7 @@ namespace Entrega3.Models
     public class UsuarioCreateViewModel
     {
         [Required(ErrorMessage = "El nombre completo es obligatorio")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El nombre solo puede contener letras y espacios")]
         public string NombreCompleto { get; set; }
 
         [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
@@ -62,6 +64,7 @@ namespace Entrega3.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre completo es obligatorio")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "El nombre solo puede contener letras y espacios")]
         public string NombreCompleto { get; set; }
 
         [Required(ErrorMessage = "El correo es obligatorio")]

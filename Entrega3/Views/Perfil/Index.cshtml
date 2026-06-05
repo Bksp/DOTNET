@@ -1,45 +1,45 @@
-﻿@model Entrega3.Models.PerfilViewModel
+@model Entrega3.Models.PerfilViewModel
 @{
     ViewBag.Title = "Mi Perfil";
 }
 
 <div class="row mb-4 mt-4">
     <div class="col-12">
-        <h2 class="fw-bold border-bottom pb-2">Administración de Perfil</h2>
-        <p class="text-muted">Actualiza tus datos personales y credenciales de acceso.</p>
+        <h2 class="fw-bold border-bottom border-light border-opacity-25 pb-2 text-white">Administración de Perfil</h2>
+        <p class="text-white-50">Actualiza tus datos personales y credenciales de acceso.</p>
     </div>
 </div>
 
 <div class="row">
     <!-- Datos Personales -->
     <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm h-100 border-0">
-            <div class="card-header bg-primary text-white"><h5 class="mb-0">Datos Básicos</h5></div>
-            <div class="card-body">
+        <div class="glass-card border-0 p-4 h-100">
+            <div class="border-bottom border-light border-opacity-25 mb-4 pb-2"><h5 class="mb-0 text-white">Datos Básicos</h5></div>
+            <div class="bg-transparent">
                 @using (Html.BeginForm("Actualizar", "Perfil", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true, "", new { @class = "text-danger mb-2" })
 
                     <div class="mb-3">
-                        <label class="form-label">Nombre Completo</label>
+                        <label class="form-label text-white-50">Nombre Completo</label>
                         @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control", required = "required" })
                         @Html.ValidationMessageFor(m => m.NombreCompleto, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Correo Electrónico</label>
+                        <label class="form-label text-white-50">Correo Electrónico</label>
                         <!-- Correo bloqueado visual y funcionalmente -->
-                        @Html.TextBoxFor(m => m.Correo, new { @class = "form-control bg-light", @readonly = "readonly" })
-                        <div class="form-text text-muted">El correo institucional no puede ser modificado.</div>
+                        @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", @readonly = "readonly" })
+                        <div class="form-text text-white-50 opacity-75">El correo institucional no puede ser modificado.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Rol Asignado</label>
-                        @Html.TextBoxFor(m => m.NombreRol, new { @class = "form-control bg-light", @readonly = "readonly" })
+                        <label class="form-label text-white-50">Rol Asignado</label>
+                        @Html.TextBoxFor(m => m.NombreRol, new { @class = "form-control", @readonly = "readonly" })
                     </div>
 
-                    <button type="submit" class="btn btn-secondary"><i class="bi bi-save"></i> Guardar Cambios</button>
+                    <button type="submit" class="btn btn-outline-light rounded-pill px-4"><i class="bi bi-save"></i> Guardar Cambios</button>
                 }
             </div>
         </div>
@@ -47,32 +47,32 @@
 
     <!-- Cambio de Contraseña -->
     <div class="col-lg-6 mb-4">
-        <div class="card shadow-sm h-100 border-0">
-            <div class="card-header bg-danger text-white"><h5 class="mb-0">Cambiar Contraseña</h5></div>
-            <div class="card-body">
+        <div class="glass-card border-0 p-4 h-100">
+            <div class="border-bottom border-light border-opacity-25 mb-4 pb-2"><h5 class="mb-0 text-white">Cambiar Contraseña</h5></div>
+            <div class="bg-transparent">
                 @using (Html.BeginForm("CambiarPassword", "Perfil", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     
                     <div class="mb-3">
-                        <label class="form-label">Contraseña Actual</label>
+                        <label class="form-label text-white-50">Contraseña Actual</label>
                         <input type="password" class="form-control" name="PasswordActual" required minlength="6">
                         @Html.ValidationMessage("PasswordActual", new { @class = "text-danger small" })
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Nueva Contraseña</label>
+                        <label class="form-label text-white-50">Nueva Contraseña</label>
                         <input type="password" class="form-control" name="PasswordNueva" required minlength="6">
                         @Html.ValidationMessage("PasswordNueva", new { @class = "text-danger small" })
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Confirmar Nueva Contraseña</label>
+                        <label class="form-label text-white-50">Confirmar Nueva Contraseña</label>
                         <input type="password" class="form-control" name="PasswordConfirmacion" required minlength="6">
                         @Html.ValidationMessage("PasswordConfirmacion", new { @class = "text-danger small" })
                     </div>
                     
-                    <button type="submit" class="btn btn-dark"><i class="bi bi-key"></i> Actualizar Contraseña</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="bi bi-key"></i> Actualizar Contraseña</button>
                 }
             </div>
         </div>

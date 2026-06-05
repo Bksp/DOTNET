@@ -5,55 +5,55 @@
 
 <div class="row mb-4 mt-4">
     <div class="col-12">
-        <h2 class="fw-bold border-bottom pb-2">Crear Nuevo Usuario</h2>
+        <h2 class="fw-bold border-bottom border-light border-opacity-25 pb-2 text-white">Crear Nuevo Usuario</h2>
     </div>
 </div>
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="bi bi-person-plus"></i> Formulario de Registro</h5>
+        <div class="glass-card border-0 p-4">
+            <div class="border-bottom border-light border-opacity-25 mb-4 pb-2">
+                <h5 class="mb-0 text-white"><i class="bi bi-person-plus"></i> Formulario de Registro</h5>
             </div>
-            <div class="card-body">
+            <div class="bg-transparent">
                 @using (Html.BeginForm("Crear", "Usuarios", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                     <div class="mb-3">
-                        <label class="form-label">Nombre Completo</label>
+                        <label class="form-label text-white-50">Nombre Completo</label>
                         @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.NombreCompleto, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Nombre de Usuario (Login)</label>
+                        <label class="form-label text-white-50">Nombre de Usuario (Login)</label>
                         @Html.TextBoxFor(m => m.NombreUsuario, new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.NombreUsuario, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Correo Institucional</label>
+                        <label class="form-label text-white-50">Correo Institucional</label>
                         @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", type = "email" })
                         @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="mb-3">
-                        <div class="alert alert-info py-2 small">
+                        <div class="alert alert-info py-2 small bg-transparent border border-info text-info">
                             <i class="bi bi-info-circle"></i> La contraseña será autogenerada usando <strong>[Nombre de Usuario]123</strong>.
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Rol del Sistema</label>
+                        <label class="form-label text-white-50">Rol del Sistema</label>
                         @Html.DropDownListFor(m => m.RolId, (SelectList)ViewBag.Roles, "Seleccione un rol...", new { @class = "form-select" })
                         @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Cancelar</a>
-                        <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Registrar Usuario</button>
+                        <a href="@Url.Action("Index")" class="btn btn-outline-light rounded-pill"><i class="bi bi-arrow-left"></i> Cancelar</a>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4"><i class="bi bi-check-circle"></i> Registrar Usuario</button>
                     </div>
                 }
             </div>
