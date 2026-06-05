@@ -98,7 +98,7 @@
         .form-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
         }
-        .form-control:focus, .form-select:focus {
+        .form-control:not([readonly]):not([disabled]):focus, .form-select:not([disabled]):focus {
             background-color: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.5);
             color: white;
@@ -106,6 +106,13 @@
         }
         .form-control::placeholder { color: rgba(255, 255, 255, 0.5); }
         .form-select option { background-color: #1a1e29; color: #fff; }
+        
+        /* Disabled and readonly inputs */
+        .form-control[readonly], .form-control[disabled], .form-select[disabled] {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
         
         /* Buttons glass override */
         .btn-primary { background: rgba(13, 110, 253, 0.6); border: 1px solid rgba(13, 110, 253, 0.8); }
