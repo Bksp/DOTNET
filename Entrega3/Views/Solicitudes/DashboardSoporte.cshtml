@@ -81,7 +81,7 @@
                            <td>${s.TipoProblemaNombre}</td>
                            <td>${renderizarInsigniaEstado(s.EstadoSolicitudId, s.EstadoNombre)}</td>
                            <td>
-                               <button class="btn btn-sm btn-outline-success" title="Actualizar Estado (PUT)" onclick="abrirModalEstado(${s.Id}, ${s.EstadoSolicitudId})"><i class="bi bi-pencil-square"></i></button>
+                               <button class="btn btn-sm btn-light" title="Actualizar Estado (PUT)" onclick="abrirModalEstado(${s.Id}, ${s.EstadoSolicitudId})"><i class="bi bi-pencil-square"></i></button>
                                <button class="btn btn-sm btn-danger" title="Eliminar (DELETE)" onclick="eliminarSolicitudAPI(${s.Id})"><i class="bi bi-trash"></i></button>
                            </td>
                        </tr>`;
